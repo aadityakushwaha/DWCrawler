@@ -2,7 +2,8 @@ import mysql.connector
 
 # Define the MySQL database configuration
 mysql_config = {
-    "host": "localhost",
+    "host": "20.21.102.215",
+    "port": "3333",
     "user": "root",
     "password": "Girlactor@77",
 }

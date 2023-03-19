@@ -14,7 +14,8 @@ def deep_scan(url):
     
     # Define the MySQL database configuration
     mysql_config = {
-        "host": "localhost",
+        "host": "20.21.102.215",
+        "port": "3333",
         "user": "root",
         "password": "Girlactor@77",
         "database": "Crawler"
@@ -64,7 +65,7 @@ def deep_scan(url):
         
         # Make a request to the URL
         try:
-            response = session.get(url, timeout=5)
+            response = session.get(url, timeout=10)
         except requests.exceptions.RequestException as err:
             print(f"Error making request to URL: {err}")
             continue
