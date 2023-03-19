@@ -9,3 +9,5 @@ python3 database.py
 sudo apt install adminer -y
 sudo a2enconf adminer
 sudo systemctl reload apache2
+sudo apt install tor -y
+sudo systemctl enable tor
