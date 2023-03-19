@@ -1,72 +1,96 @@
 import requests
 from bs4 import BeautifulSoup
-from concurrent.futures import ThreadPoolExecutor
-from urllib.parse import urlparse, urljoin
-from ocr import extract_text_from_url
+import mysql.connector
 
-# Maintain the same proxy settings across multiple requests using session
 session = requests.session()
 session.proxies = {
     'http': 'socks5h://localhost:9050',
     'https': 'socks5h://localhost:9050'
 }
 
-# Store the links already scanned in a set
-links_with_in = set()
-
-# Define a recursive function to perform a deep scan of the website
 def deep_scan(url):
+    # Define the starting URL
+    start_url = url
+    
+    # Define the MySQL database configuration
+    mysql_config = {
+        "host": "localhost",
+        "user": "root",
+        "password": "Girlactor@77",
+        "database": "Crawler"
+    }
+    
+    # Connect to the MySQL database
     try:
-        # Get the root url of the website
-        root_url = urlparse(url).netloc
+        db = mysql.connector.connect(**mysql_config)
+    except mysql.connector.Error as err:
+        print(f"Error connecting to MySQL database: {err}")
+        return
+
+    # Create a cursor to execute SQL queries
+    cursor = db.cursor()
+
+    # Create the table to store the URLs (if it doesn't exist already)
+    try:
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS onion_urls (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                url VARCHAR(255) NOT NULL UNIQUE
+            )
+        """)
+    except mysql.connector.Error as err:
+        print(f"Error creating MySQL table: {err}")
+        db.close()
+        return
+
+
+    # Define a set to keep track of visited URLs
+    visited_urls = set()
+
+    # Define a list to keep track of URLs to visit
+    urls_to_visit = [start_url]
+
+    # Loop until there are no more URLs to visit
+    while urls_to_visit:
+        # Pop the next URL from the list of URLs to visit
+        url = urls_to_visit.pop(0)
         
-        response = session.get(url)
-
-        # Parse the HTML content using BeautifulSoup
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-        # Extract image links
-        image_links = [img['src'] for img in soup.find_all('img')]
-        for link in image_links:
-            print(extract_text_from_url(link))
-
-        # Extract meta content tags
-        meta_tags = soup.find_all('meta')
-        meta_content = {tag['name']: tag['content'] for tag in meta_tags if 'name' in tag.attrs and 'content' in tag.attrs}
-
-        # Extract links and recursively call the function on the new link
-        links = soup.find_all('a', href=True)
-        new_links = set()
+        # Skip URLs that have already been visited
+        if url in visited_urls:
+            continue
+        
+        # Add the URL to the set of visited URLs
+        visited_urls.add(url)
+        
+        # Make a request to the URL
+        try:
+            response = session.get(url, timeout=5)
+        except requests.exceptions.RequestException as err:
+            print(f"Error making request to URL: {err}")
+            continue
+        
+        # Parse the HTML content of the response using BeautifulSoup
+        soup = BeautifulSoup(response.content, "html.parser")
+        
+        # Find all links on the page
+        links = soup.find_all("a")
+        
+        # Add any new links to the list of URLs to visit
         for link in links:
-            # Check if the link is a relative URL
-            if link['href'].startswith('/'):
-                link_url = urljoin(response.url, link['href'])
-            else:
-                link_url = link['href']
-                
-            # Check if the link is from the same domain and not already scanned
-            if root_url in link_url and link_url not in links_with_in:
-                new_links.add(link_url)
-
-        links_with_in.update(new_links)
-        
-        # Use a ThreadPoolExecutor to scan the new links concurrently
-        with ThreadPoolExecutor() as executor:
-            futures = [executor.submit(deep_scan, link) for link in new_links]
-
-        # Extract other useful information
-        headings = [h.text for h in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])]
-
-        # Store the extracted information in a dictionary
-        data = {
-            'title': soup.title.string,
-            'image_links': image_links,
-            'meta_content': meta_content,
-            'headings': headings,
-            'links': links
-        }
-
-    except requests.exceptions.RequestException as e:
-        print(f"An Error Occured: {e}")
-
-    print(links_with_in)
+            href = link.get("href")
+            try:
+                if href and href.startswith("http") and href.endswith(".onion") and href not in visited_urls:
+                    # Insert the new URL into the database (if it doesn't exist already)
+                    try:
+                        cursor.execute("INSERT IGNORE INTO onion_urls (url) VALUES (%s)", (href,))
+                        db.commit()
+                    except mysql.connector.Error as err:
+                        print(f"Error inserting URL into MySQL database: {err}")
+                        continue
+                        
+                    # Add the new URL to the list of URLs to visit
+                    urls_to_visit.append(href)
+            except AttributeError as err:
+                print(f"Something went wrong: {err}")
+    print("done")
+    db.close()

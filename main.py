@@ -1,3 +1,8 @@
 from crawler import deep_scan
-url = input("Enter the dark web url: ")
-deep_scan(url)
+# Read the list of URLs from a file
+with open('urls.txt', 'r') as f:
+    urls = f.read().splitlines()
+
+# Call the deep_scan function for each URL
+for url in urls:
+    deep_scan(url)
