@@ -53,12 +53,20 @@ for id, url in onion_urls:
                 image_urls += tag.get('src') + "\n"
 
         # Update record in database with title, keywords, description, content, and image URLs, and mark as scraped
-        sql = "UPDATE onion_urls SET url = %s, title = %s, keywords = %s, description = %s, content = %s, image_urls = %s, scraped = 1 WHERE id = %s"
+        sql = "UPDATE onion_urls SET url = %s, title = %s, keywords = %s, description = %s, content = %s, image_urls = %s, scraped = 1 WHERE id = %s and scraped = 0"
         val = (url.strip(), title.strip(), keywords.strip(), description.strip(), content.strip(), image_urls.strip(), id)
         mycursor.execute(sql, val)
         mydb.commit()
 
         print(f"Successfully scraped and updated data for {url}")
+        
+        def error():
+            sql = "UPDATE onion_urls SET url = %s, title = %s, keywords = %s, description = %s, content = %s, image_urls = %s, scraped = -1 WHERE id = %s"
+            val = (url.strip(), title.strip(), keywords.strip(), description.strip(), content.strip(), image_urls.strip(), id)
+            mycursor.execute(sql, val)
+            mydb.commit()
 
     except Exception as e:
-        print(f"Error scraping {url}: {e}")
+        print(f"Error scraping: {url}")
+        error()
+        
