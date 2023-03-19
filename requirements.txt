@@ -5,3 +5,4 @@ pytesseract
 requests
 PySocks
 opencv-python
+mysql-connector-python
