@@ -1,5 +1,5 @@
 sudo apt update -y
-sudo apt upgraed -y
+sudo apt upgrade -y
 sudo apt install python3-pip -y
 pip install -r requirements.txt
 sudo apt install mysql-server -y
