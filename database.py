@@ -42,7 +42,7 @@ try:
         CREATE TABLE IF NOT EXISTS onion_urls (
             id INT AUTO_INCREMENT PRIMARY KEY,
             url VARCHAR(255) NOT NULL UNIQUE,
-            title VARCHAR(255),
+            title LONGTEXT,
             keywords TEXT,
             description TEXT,
             content TEXT,
