@@ -57,6 +57,7 @@ def deep_scan(url):
         
         # Skip URLs that have already been visited
         if url in visited_urls:
+		
             continue
         
         # Add the URL to the set of visited URLs
