@@ -16,7 +16,7 @@ def deep_scan(url):
     mysql_config = {
         "host": "localhost",
         "user": "root",
-        "password": "Girlactor@77",
+        "password": "",
         "database": "Crawler"
     }
     
