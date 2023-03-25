@@ -4,7 +4,7 @@ import mysql.connector
 mysql_config = {
     "host": "localhost",
     "user": "root",
-    "password": "Girlactor@77",
+    "password": "",
 }
 
 # Connect to the MySQL server
