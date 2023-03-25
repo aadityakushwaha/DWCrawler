@@ -5,7 +5,7 @@ import openai
 db = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="Girlactor@77",
+  password="",
   database="Crawler"
 )
 
