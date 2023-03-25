@@ -1,0 +1,1 @@
+http://ozgunsbxgra7huwedjymobzswzk3hdysncrfrhdv2kledvjaqydtzdyd.onion/ (GET)  # /usr/bin/sqlmap -u http://ozgunsbxgra7huwedjymobzswzk3hdysncrfrhdv2kledvjaqydtzdyd.onion/ --tor --tor-type=SOCKS5 --tor-port=9050 --output-dir=./output
