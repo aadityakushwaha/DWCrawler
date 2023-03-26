@@ -5,7 +5,7 @@ import openai
 db = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="Girlactor@77",
+  password="PASSWORD",
   database="Crawler"
 )
 
@@ -15,7 +15,7 @@ cursor.execute("SELECT * FROM onion_urls WHERE ai_tag IS NULL")
 rows = cursor.fetchall()
 
 # Set up the OpenAI API
-openai.api_key = "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"
+openai.api_key = "API-KEY"
 model_engine = "text-davinci-003"
 initial = "Please follow reply in this format\n tags = #tage_name"
 prompt_template = "Please provide some tags for this website based on the following information:\nTitle: {}\nKeywords: {}\nDescription: {}\nContent: {}\nTags:"

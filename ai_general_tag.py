@@ -6,7 +6,7 @@ import time
 db = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="Girlactor@77",
+  password="",
   database="Crawler"
 )
 
@@ -16,7 +16,7 @@ cursor.execute("SELECT * FROM onion_urls WHERE ai_general_tag IS NULL")
 rows = cursor.fetchall()
 
 # Set up the OpenAI API
-openai.api_key = "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"
+openai.api_key = "<API-KEY>"
 model_engine = "text-davinci-003"
 initial = "Category are:\n1. Ransomware\n2. Botnets\n3. Darknet markets\n4. Bitcoin services\n5. Hacking groups and services\n6. Financing and fraud\n7. Illegal pornography\n8. Terrorism\n9. Social media\n10. Hoaxes and unverified content\n11. Weapons\n12. MISC"
 prompt_template = "Please provide a category for this website based on the following information:\nTitle: {}\nDescription: {}\n"

@@ -4,7 +4,8 @@ import mysql.connector
 
 # Connect to MySQL database
 mydb = mysql.connector.connect(
-  host="localhost",
+  host="34.220.243.94",
+  port = "3306",
   user="root",
   password="Girlactor@77",
   database="Crawler"
@@ -62,16 +63,9 @@ for id, url in onion_urls:
             print(f"Successfully scraped and updated data for {url}")
         except Exception as e:
              print(f"Error saaving data to database: {e}")
-        
-        def error():
-            sql = "UPDATE onion_urls SET url = %s, title = %s, keywords = %s, description = %s, content = %s, image_urls = %s, scraped = -1 WHERE id = %s"
-            val = (url.strip(), title.strip(), keywords.strip(), description.strip(), content.strip(), image_urls.strip(), id)
-            mycursor.execute(sql, val)
-            mydb.commit()
-
+             sql = "UPDATE onion_urls SET url = %s, title = %s, keywords = %s, description = %s, content = %s, image_urls = %s, scraped = -1 WHERE id = %s and scraped <> 1"
+             val = (url.strip(), title.strip(), keywords.strip(), description.strip(), content.strip(), image_urls.strip(), id)
+             mycursor.execute(sql, val)
+             mydb.commit()
     except Exception as e:
-        print(f"Error scraping: {url}")
-        try:
-            error()
-        except Exception as e:
-             print(f"Error saaving data to database: {e}")
+        print(f"Some error occured: {e}")
