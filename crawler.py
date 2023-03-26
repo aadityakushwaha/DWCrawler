@@ -14,9 +14,10 @@ def deep_scan(url):
     
     # Define the MySQL database configuration
     mysql_config = {
-        "host": "localhost",
+        "host": "34.220.243.94",
+        "port": "3306",
         "user": "root",
-        "password": "PASSWORD",
+        "password": "Girlactor@77",
         "database": "Crawler"
     }
     
@@ -95,3 +96,11 @@ def deep_scan(url):
                 print(f"Something went wrong: {err}")
     print("done")
     db.close()
+
+# Read the list of URLs from a file
+with open('urls.txt', 'r') as f:
+    urls = f.read().splitlines()
+
+# Call the deep_scan function for each URL
+for url in urls:
+    deep_scan(url)
